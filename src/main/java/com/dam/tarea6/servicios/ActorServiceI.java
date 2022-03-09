@@ -1,6 +1,7 @@
 package com.dam.tarea6.servicios;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 
@@ -12,13 +13,13 @@ public interface ActorServiceI {
 
 	public List<Actor> obtenerTodos();
 	
-	public void anadirActor(final Actor actor);
+	public Actor anadirActor(final Actor actor);
 	
-	public void eliminarActor(final long IdActor);
+	public void eliminarActor(final Long IdActor);
 	
 	public void actualizarActor(final Actor actor);
 	
-	public Actor obtenerActorPorId(Long Id);
+	public Optional<Actor> obtenerActorPorId(Long Id);
 	
 	public Actor obtenerActorPorNombreYAppelidos(String nombre, String apellidos);
 	

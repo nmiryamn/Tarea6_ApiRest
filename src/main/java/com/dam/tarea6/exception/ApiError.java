@@ -20,7 +20,7 @@ public class ApiError {
 	
 	@NonNull
 	private HttpStatus estado;
-	@JsonFormat(shape = Shape.STRING, pattern = "dd/MM/yyyy hh:mm:ss")
+	@JsonFormat(shape = Shape.STRING, pattern = "yyyy/MM/dd")
 	private LocalDateTime fecha = LocalDateTime.now();
 	@NonNull
 	private String mensaje;

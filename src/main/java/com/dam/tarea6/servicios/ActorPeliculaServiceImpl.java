@@ -1,6 +1,7 @@
 package com.dam.tarea6.servicios;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,8 +37,8 @@ public class ActorPeliculaServiceImpl implements ActorPeliculaServiceI{
 	}
 
 	@Override
-	public void anadirActorPelicula(ActorPelicula actorPelicula) {
-		actorPeliculaRepositorio.save(actorPelicula);
+	public ActorPelicula anadirActorPelicula(ActorPelicula actorPelicula) {
+		return actorPeliculaRepositorio.save(actorPelicula);
 	}
 
 	@Override
@@ -59,6 +60,11 @@ public class ActorPeliculaServiceImpl implements ActorPeliculaServiceI{
 	@Override
 	public List<ActorPelicula> obtenerActorPeliculaPorIdPelicula(long idPelicula) {
 		return actorPeliculaRepositorio.findActorPeliculaByPeliculaId(idPelicula);
+	}
+
+	@Override
+	public Optional<ActorPelicula> obtenerActorPeliculaPorId(long id) {
+		return actorPeliculaRepositorio.findById(id);
 	}
 
 }

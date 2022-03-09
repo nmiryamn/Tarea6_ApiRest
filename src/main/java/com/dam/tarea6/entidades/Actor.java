@@ -25,6 +25,7 @@ import javax.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -84,6 +85,7 @@ public class Actor implements Serializable{
 	/**
 	 * Lista de nuestra entidad ActorPelicula
 	 */
+	@JsonIgnore
 	@OneToMany(mappedBy = "actor", cascade = CascadeType.REMOVE)
 	private List<ActorPelicula> actorPeliculas;
 

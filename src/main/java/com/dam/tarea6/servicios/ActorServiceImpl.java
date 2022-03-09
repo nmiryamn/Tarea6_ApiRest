@@ -1,6 +1,7 @@
 package com.dam.tarea6.servicios;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,12 @@ public class ActorServiceImpl implements ActorServiceI{
 	private ActorRepositorio actorRepositorio;
 
 	@Override
-	public void anadirActor(Actor actor) {
-		actorRepositorio.save(actor);			
+	public Actor anadirActor(Actor actor) {
+		return actorRepositorio.save(actor);			
 	}
 
 	@Override
-	public void eliminarActor(long IdActor) {
+	public void eliminarActor(Long IdActor) {
 		actorRepositorio.deleteById(IdActor);
 	}
 
@@ -29,7 +30,6 @@ public class ActorServiceImpl implements ActorServiceI{
 	public void actualizarActor(Actor actor) {
 		actorRepositorio.save(actor);
 	}
-
 
 	@Override
 	public List<Actor> obtenerTodos() {
@@ -58,8 +58,8 @@ public class ActorServiceImpl implements ActorServiceI{
 	}
 
 	@Override
-	public Actor obtenerActorPorId(Long Id) {
-		return actorRepositorio.getById(Id);
+	public Optional<Actor> obtenerActorPorId(Long Id) {
+		return actorRepositorio.findById(Id);
 	}
 	
 	

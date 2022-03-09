@@ -13,8 +13,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 @RestControllerAdvice
 public class GlobalControllerAdvice extends ResponseEntityExceptionHandler{
 	
-	@ExceptionHandler(CocheNotFoundException.class)
-	public ResponseEntity<ApiError> handleProductoNoEncontrado(CocheNotFoundException ex) {
+	@ExceptionHandler(ActorNotFoundException.class)
+	public ResponseEntity<ApiError> handleProductoNoEncontrado(ActorNotFoundException ex) {
 		ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getMessage());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
 	}

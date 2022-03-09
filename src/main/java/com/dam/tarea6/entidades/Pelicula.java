@@ -26,6 +26,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Range;
 
 import com.dam.tarea6.entidades.Actor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -66,6 +67,7 @@ public class Pelicula implements Serializable{
 	@Column(length = 1000)
 	private String summary;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "pelicula", cascade = CascadeType.REMOVE)
 	private List<ActorPelicula> actorPeliculas;
 

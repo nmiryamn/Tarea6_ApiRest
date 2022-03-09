@@ -2,6 +2,7 @@ package com.dam.tarea6.repositorio;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -39,5 +40,6 @@ public interface ActorPeliculaRepositorio extends JpaRepository<ActorPelicula,Lo
 	 */
 	@Query(value = "SELECT id, actor_id, pelicula_id FROM actor_pelicula", nativeQuery = true)
 	List <ActorPelicula> findActorPelicula();
+	
 
 }

@@ -8,30 +8,37 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.dam.tarea6.entidades.Actor;
-import com.dam.tarea6.entidades.ActorModelo;
-import com.dam.tarea6.entidades.Pelicula;
-import com.dam.tarea6.exception.InvalidDataException;
+import com.dam.tarea6.exception.ActorNotFoundException;
 import com.dam.tarea6.servicios.ActorServiceI;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 /**
  * 
  * @author Usuario
  *
  */
-@Controller
+@RestController
 public class ActorController {
 
 	/**
@@ -39,131 +46,48 @@ public class ActorController {
 	 */
 	@Autowired
 	private ActorServiceI actorServiceI;
-	
-	@RequestMapping("/home")
-	@ResponseBody
-	public String home() {
-		return "hello world";
-	}
 
 	/**
-	 * Método que mostrará todos los actores cuando lo llamemos desde el index. 
-	 * Usaremos nuestra entidad modelo. 
-	 * @param model Objeto Model
-	 * @return showActors. Retorna la vista html que muestra los actores.
+	 * Método que muestra todos los actores.
+	 * @return La respuesta de la Api
 	 */
-	@GetMapping("/showActorsView")
-	public String mostrarActores(Model model) {
+	@GetMapping("/mostrarActores")
+	public ResponseEntity<?> mostrarActores() {
 
 		// Obtención de actores
 		final List<Actor> ActorList = actorServiceI.obtenerTodos();
 
-		ActorModelo actorModelo;
-		final List<ActorModelo> ActorModeloList = new ArrayList<>();
-		
-		if (!CollectionUtils.isEmpty(ActorList)) {
-			for (Actor actor : ActorList) {
-				actorModelo = new ActorModelo();
-				actorModelo.setId(actor.getId());
-				actorModelo.setName(actor.getName());
-				actorModelo.setSurname(actor.getSurname());
-				actorModelo.setNationality(actor.getNationality());
-				actorModelo.setBirthdate(actor.getBirthdate());
-				ActorModeloList.add(actorModelo);
-			}
+		if(ActorList.isEmpty()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No hay actores registrados");
+		}else {
+			return ResponseEntity.ok(ActorList);
 		}
-		
-		// Carga de datos al modelo
-		model.addAttribute("actorsListView", ActorModeloList);
-		model.addAttribute("btnDropActorEnabled", Boolean.FALSE);
-
-		return "showActors";
 	}
 
 	/**
 	 * Método que eliminará el actor que tenga el id que le pasamos por parámetro. 
-	 * @param actorId Id del actor
-	 * @param model Objeto Model
-	 * @return "redirect:showActorsView" Redirecciona a showActorsView  
+	 * @param id Identificador del Actor
+	 * @return Respuesta de la Api
 	 */
-	@PostMapping("/actDropActor")
-	public String eliminarActor(@RequestParam String actorId, Model model) {
+	@DeleteMapping("/actor/{id}")
+	public ResponseEntity<?> eliminarActor(@PathVariable Long id) {
 
 		// Eliminación de actor
-		actorServiceI.eliminarActor(Long.valueOf(actorId));
-
-		return "redirect:showActorsView";
-
-	}
-
-	/**
-	 * Método que busca actores por nombre, nacionalidad o apellido. 
-	 * @param searchedActor 
-	 * @param model Objeto Model
-	 * @return "showActors" La vista que lista todos los actores
-	 * @throws Exception En el caso de que los parámetros de búsqueda sean erróneos. 
-	 */
-	@PostMapping("/actSearchActor")
-	public String submitBuscarActorForm(@ModelAttribute Actor searchedActor, Model model) throws Exception {
-
-		List<Actor> listaActores = new ArrayList<Actor>();
-		
-		System.out.println(searchedActor.getName());
-
-		final String actorNombre = searchedActor.getName().toUpperCase();
-		final String actorNacionalidad = searchedActor.getNationality().toUpperCase();
-		final String actorApellido = searchedActor.getSurname().toUpperCase();
-		
-		if (StringUtils.hasText(actorNombre) && StringUtils.hasText(actorApellido)) {
-
-			// Búsqueda por nombre y apellidos
-			final Actor actor = actorServiceI.obtenerActorPorNombreYAppelidos(actorNombre, actorApellido);
-
-			if (actor != null) {
-				listaActores.add(actor);
-				
-			}
-			
-		} else if (!StringUtils.hasText(actorNombre)
-				&& (StringUtils.hasText(actorNacionalidad) && StringUtils.hasText(actorApellido))) {
-
-			listaActores = actorServiceI.obtenerActorPorApellidoYNacionalidad(actorApellido, actorNacionalidad);
-			
-		} else if (!StringUtils.hasText(actorNombre)
-				&& (StringUtils.hasText(actorNacionalidad) || StringUtils.hasText(actorApellido))) {
-
-			// Búsqueda por apellido o nacionalidad
-			listaActores = actorServiceI.obtenerActorPorApellidoONacionalidad(actorApellido, actorNacionalidad);
-
-		} else if(StringUtils.hasText(actorNombre) && (!StringUtils.hasText(actorNacionalidad) || !StringUtils.hasText(actorApellido))) {
-			
-			listaActores = actorServiceI.obtenerActoresPorNombre(actorNombre);
-			
-		} else {
-			throw new Exception("Parámetros de búsquieda erróneos.");
-		}
-
-		// Carga de datos al modelo
-		model.addAttribute("actorsListView", listaActores);
-		model.addAttribute("btnDropActorEnabled", Boolean.TRUE);
-
-		return "showActors";
+		Actor actor = actorServiceI.obtenerActorPorId(id)
+				.orElseThrow(()-> new ActorNotFoundException(id));
+				actorServiceI.eliminarActor(id);
+		return ResponseEntity.noContent().build();
 
 	}
 
 	/**
-	 * Método que añade un nuevo actor a la base de datos mediante el actor modelo que pasamos por parámetro.
-	 * @param newActor Objeto ActorModelo que usaremos para añadir un nuevo actor.
-	 * @param result Respuesta que indica si hay algún error al introducir los parámetros.
-	 * @return "redirect:showActorsView" Redirecciona a showActorsView  
-	 * @throws Exception En el caso de que los parámetros de búsqueda sean erróneos. 
+	 * Método que añade un nuevo actor a la base de datos.
+	 * @param newActor Objeto Actor que pasamos por parámetro
+	 * @return Respuesta de la Api
+	 * @throws Exception
 	 */
-	@PostMapping("/actAddActor")
-	private String aniadirActor(@Valid @ModelAttribute ActorModelo newActor, BindingResult result) throws Exception {
-		
-		if (result.hasErrors()) {			
-			throw new InvalidDataException(result);
-		} else {
+	@PostMapping("/actor")
+	private ResponseEntity<?> aniadirActor(@RequestBody Actor newActor) throws Exception {
 			
 			Actor a = new Actor();
 			
@@ -172,49 +96,36 @@ public class ActorController {
 			a.setNationality(newActor.getNationality());
 			a.setBirthdate(newActor.getBirthdate());
 			
-			a.setActorPeliculas(null);
-			actorServiceI.anadirActor(a);
-		}
-
-		return "redirect:showActorsView";
+			return ResponseEntity.status(HttpStatus.CREATED).body(actorServiceI.anadirActor(a));
 	}
 	
 	/**
-	 * Método en el que a partir del id de actor pasado por parámetro obtenemos un actor
-	 * y añadimos el atributo al modelo. 
-	 * @param actorId Id del actor.
-	 * @param model Objeto Model
-	 * @return "updateActor" Retorna la vista de actualización de actor. 
-	 * @throws Exception En el caso de que los parámetros de búsqueda sean erróneos. 
+	 * Método en el que a partir del id de actor pasado por parámetro actualizamos un actor
+	 * @param actorEditado Objeto Actor 
+	 * @param id Id del Actor a editar
+	 * @return Respuesta de la Api
 	 */
-	@PostMapping("/actSetActor")
-	public String actualizaSeteaActor(@RequestParam String actorId, Model model) throws Exception {
+	@PutMapping("/actor/{id}")
+	public Actor actualizaActor(@RequestBody Actor actorEditado, @PathVariable Long id) {
 		
-		Actor a = actorServiceI.obtenerActorPorId(Long.valueOf(actorId));
-	
-		model.addAttribute("actor", a);
-		
-		return "updateActor";
+		return actorServiceI.obtenerActorPorId(id).map(p -> {
+			p.setName(actorEditado.getName());
+			p.setSurname(actorEditado.getSurname());
+			p.setBirthdate(actorEditado.getBirthdate());
+			p.setNationality(actorEditado.getNationality());
+			return actorServiceI.anadirActor(p);
+		}).orElseThrow(() -> new ActorNotFoundException(id));
 	}
 	
 	/**
-	 * Método que actualiza un actor que le pasemos por parámetro.
-	 * @param newActor Objeto Actor
-	 * @param result Respuesta que indica si hay algún error al introducir los parámetros.
-	 * @return "redirect:showActorsView" Redirecciona a showActorsView
-	 * @throws Exception En el caso de que los parámetros de búsqueda sean erróneos. 
+	 * Método que muestra un actor por id 
+	 * @param id Identificador del Actor
+	 * @return Respuesta de la Api
 	 */
-	@PostMapping("/actUpdateActor")
-	public String actualizaActores(@Valid @ModelAttribute Actor newActor, BindingResult result) throws Exception {
+	@GetMapping("/actor/{id}")
+	public Actor mostrarActor(@PathVariable Long id) {
 		
-		if (result.hasErrors()) {
-			throw new InvalidDataException(result);
-		} else {
-			// Se añade la nueva película
-			actorServiceI.actualizarActor(newActor);
-		}
-
-		return "redirect:showActorsView";
+		return actorServiceI.obtenerActorPorId(id).orElseThrow(() -> new ActorNotFoundException(id));
 	}
 	
 }

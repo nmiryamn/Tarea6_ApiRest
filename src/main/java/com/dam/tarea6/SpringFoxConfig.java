@@ -16,7 +16,7 @@ public class SpringFoxConfig {
 	    public Docket api() { 
 	        return new Docket(DocumentationType.SWAGGER_2)  
 	          .select()                                  
-	          .apis(RequestHandlerSelectors.any())              
+	          .apis(RequestHandlerSelectors.basePackage("com.dam.tarea6.controladores"))              
 	          .paths(PathSelectors.any())                          
 	          .build();                                           
 	    }
