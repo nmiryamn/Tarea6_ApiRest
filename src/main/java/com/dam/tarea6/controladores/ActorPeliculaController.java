@@ -66,7 +66,7 @@ public class ActorPeliculaController {
 
 	/**
 	 * Muestra todos los objetos ActorPelicula
-	 * @return 
+	 * @return Todos los objetos ActorPelicula de la base de datos
 	 */
 	@GetMapping("mostarActorPelicula")
 	public ResponseEntity<?> mostarActorPeliculas() {
@@ -82,7 +82,7 @@ public class ActorPeliculaController {
 	
 	/**
 	 * Obtiene el objeto ActorPelicula que contenga el id pasado por parámetro
-	 * @return 
+	 * @return Muestra el objeto ActorPelicula
 	 */
 	@GetMapping("/actorpelicula/{id}")
 	public ActorPelicula mostrarActorPelicula(@PathVariable Long id) {
@@ -90,9 +90,9 @@ public class ActorPeliculaController {
 	}
 	
 	/**
-	 * Crea un nuevo objeto de ActorPelicula
+	 * Método que crea un objeto ActorPelicula
 	 * @param newActorPelicula
-	 * @return
+	 * @return Añade el objeto a la base de datos
 	 */
 	@PostMapping("/actorpelicula")
 	private ResponseEntity<?> aniadirActorPelicula(@RequestBody ActorPelicula newActorPelicula) {
@@ -100,10 +100,10 @@ public class ActorPeliculaController {
 	}
 	
 	/**
-	 * Actualiza un objeto ActorPelicula
-	 * @param actorPeliculaEditado
-	 * @param id
-	 * @return
+	 * Actualiza un objeto ActorPelicula a partir del id pasado por parámetro
+	 * @param actorPeliculaEditado Objeto ActorPelicula
+	 * @param id Identificador del ActorPelicula
+	 * @return Actualiza el actor en la base de datos
 	 */
 	@PutMapping("/actorpelicula/{id}")
 	private ActorPelicula actualizarActorPelicula(@RequestBody ActorPelicula actorPeliculaEditado, @PathVariable Long id) {
@@ -115,9 +115,9 @@ public class ActorPeliculaController {
 	}
 	
 	/**
-	 * Borra un objeto ActorPelicula
-	 * @param id
-	 * @return
+	 * Método que borra un objeto ActorPelicula que tenga el id pasado por parámetro
+	 * @param id Identificador del ActorPelicula
+	 * @return Elimina el objeto de la base de datos
 	 */
 	@DeleteMapping("/actorpelicula/{id}")
 	private ResponseEntity<?> eliminarActorPelicula(@PathVariable Long id) {

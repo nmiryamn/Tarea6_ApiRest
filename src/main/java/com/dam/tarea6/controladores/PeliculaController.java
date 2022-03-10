@@ -51,7 +51,7 @@ public class PeliculaController {
 
 	/**
 	 * Método que muestra todas las películas
-	 * @return La respuesta de la Api
+	 * @return Todas las películas de la base de datos
 	 */
 	@GetMapping("/mostrarPeliculas")
 	public ResponseEntity<?> mostrarPeliculas() {
@@ -68,8 +68,8 @@ public class PeliculaController {
 
 	/**
 	 * Método que eliminará la película que tenga el id que pasamos por parámetro.
-	 * @param id Identificador del objet o Pelicula
-	 * @return Respuesta de la Api
+	 * @param id Identificador del objeto Pelicula
+	 * @return 
 	 */
 	@DeleteMapping("/pelicula/{id}")
 	public ResponseEntity<?> eliminarPelicula(@PathVariable Long id) {
@@ -105,7 +105,7 @@ public class PeliculaController {
 	 * Método que actualiza una película
 	 * @param peliculaEditada Objeto Pelicula
 	 * @param id Identificador de la Pelicula a editar
-	 * @return Respuesta de la api
+	 * @return Actualiza la película en la base de datos
 	 */
 	@PutMapping("/pelicula/{id}")
 	public Pelicula actualizaPelicula(@RequestParam Pelicula peliculaEditada, @PathVariable Long id) {
@@ -123,7 +123,7 @@ public class PeliculaController {
 	/**
 	 * Método que muestra una película por id
 	 * @param id Identificador de la Película a mostrar
-	 * @return La Película que hemos obtenido por el Id
+	 * @return Muestra la película
 	 */
 	@GetMapping("/pelicula/{id}")
 	public Pelicula mostrarPelicula(@PathVariable Long id) {

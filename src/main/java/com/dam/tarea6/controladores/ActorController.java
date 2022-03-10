@@ -49,7 +49,7 @@ public class ActorController {
 
 	/**
 	 * Método que muestra todos los actores.
-	 * @return La respuesta de la Api
+	 * @return Todos los actores/actrices de la base de datos
 	 */
 	@GetMapping("/mostrarActores")
 	public ResponseEntity<?> mostrarActores() {
@@ -67,7 +67,7 @@ public class ActorController {
 	/**
 	 * Método que eliminará el actor que tenga el id que le pasamos por parámetro. 
 	 * @param id Identificador del Actor
-	 * @return Respuesta de la Api
+	 * @return Elimina el objeto de la base de datos
 	 */
 	@DeleteMapping("/actor/{id}")
 	public ResponseEntity<?> eliminarActor(@PathVariable Long id) {
@@ -103,7 +103,7 @@ public class ActorController {
 	 * Método en el que a partir del id de actor pasado por parámetro actualizamos un actor
 	 * @param actorEditado Objeto Actor 
 	 * @param id Id del Actor a editar
-	 * @return Respuesta de la Api
+	 * @return Actualiza el actor en la base de datos
 	 */
 	@PutMapping("/actor/{id}")
 	public Actor actualizaActor(@RequestBody Actor actorEditado, @PathVariable Long id) {
@@ -120,7 +120,7 @@ public class ActorController {
 	/**
 	 * Método que muestra un actor por id 
 	 * @param id Identificador del Actor
-	 * @return Respuesta de la Api
+	 * @return Muestra el actor
 	 */
 	@GetMapping("/actor/{id}")
 	public Actor mostrarActor(@PathVariable Long id) {
